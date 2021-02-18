@@ -36,6 +36,7 @@ minionRouter.get("/:minionId", (req, res, next) => {
 });
 
 minionRouter.put("/:minionId", (req, res, next) => {
+  // not neccesary since the midleware. IT checks if the updated minion exists. However, this maybe checks if the update is allowed
   const minionChange = updateInstanceInDatabase("minion", req.body);
   if (!minionChange) {
     res.status(404).send();
@@ -44,4 +45,12 @@ minionRouter.put("/:minionId", (req, res, next) => {
   }
 });
 
-minionRouter.delete("/:minionId", (req, res, next) => {});
+minionRouter.delete("/:minionId", (req, res, next) => {
+  const deleted = deleteAllFromDatabase("minion", req.params.minionId);
+  if (deleted) {
+    res.status(204);
+  } else {
+    res.status(500);
+  }
+  res.send();
+});
